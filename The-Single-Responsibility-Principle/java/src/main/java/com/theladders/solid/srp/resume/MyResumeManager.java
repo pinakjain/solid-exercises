@@ -1,7 +1,7 @@
 package com.theladders.solid.srp.resume;
 
 import com.theladders.solid.srp.jobseeker.Jobseeker;
-
+@Deprecated
 public class MyResumeManager
 {
   private final ActiveResumeRepository repository;

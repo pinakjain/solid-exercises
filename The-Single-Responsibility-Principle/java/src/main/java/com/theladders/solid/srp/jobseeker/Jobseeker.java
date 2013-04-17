@@ -1,14 +1,24 @@
 package com.theladders.solid.srp.jobseeker;
 
+import com.theladders.solid.srp.resume.Resume;
+
 public class Jobseeker
 {
   private final int id;
   private final boolean hasPremiumAccount;
+  private Resume activeResume;
 
   public Jobseeker(int id, boolean hasPremiumAccount)
   {
     this.id = id;
     this.hasPremiumAccount = hasPremiumAccount;
+  }
+  
+  public Jobseeker(int id, boolean hasPremiumAccount, Resume activeResume)
+  {
+    this.id = id;
+    this.hasPremiumAccount = hasPremiumAccount;
+    this.activeResume = activeResume;  
   }
 
   public boolean isPremium()
@@ -20,8 +30,16 @@ public class Jobseeker
   {
     return id;
   }
+  
+  public void activeResume(Resume activeResume){
+	  this.activeResume = activeResume;  
+  }
+  
+  public Resume getActiveResume() {
+	return activeResume;
+  }
 
-  @Override
+@Override
   public int hashCode()
   {
     final int prime = 31;

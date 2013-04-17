@@ -3,7 +3,7 @@ package com.theladders.solid.srp.resume;
 import java.util.HashMap;
 import java.util.Map;
 
-
+@Deprecated
 public class ActiveResumeRepository
 {
   private final Map<Integer, Resume> resumes;
