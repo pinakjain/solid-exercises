@@ -2,6 +2,7 @@ package com.theladders.solid.srp.resume;
 
 import com.theladders.solid.srp.http.HttpRequest;
 import com.theladders.solid.srp.job.application.ApplicationFailureException;
+import com.theladders.solid.srp.job.application.ResumeNotFoundException;
 import com.theladders.solid.srp.jobseeker.Jobseeker;
 
 public class ResumeManager
@@ -23,9 +24,9 @@ public class ResumeManager
     return resume;
   }
   
-  public void makeActiveResume(Jobseeker jobseeker, Resume resume) throws ApplicationFailureException{
+  public void makeActiveResume(Jobseeker jobseeker, Resume resume) throws ResumeNotFoundException{
 	  if(resume == null){
-		  throw new ApplicationFailureException("No resume");
+		  throw new ResumeNotFoundException("No resume found");
 	  }
 	  jobseeker.activeResume(resume);
   }
