@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.theladders.solid.srp.application.ApplicationView;
+import com.theladders.solid.srp.applicationViews.ApplySuccessView;
+import com.theladders.solid.srp.applicationViews.ErrorView;
+import com.theladders.solid.srp.applicationViews.InvalidJobView;
+import com.theladders.solid.srp.applicationViews.ResumeCompletionView;
 import com.theladders.solid.srp.http.HttpRequest;
 import com.theladders.solid.srp.http.HttpResponse;
 import com.theladders.solid.srp.job.Job;
@@ -57,7 +60,7 @@ public class ApplyController
 
 	  if (job == null)
 	  {
-		  ApplicationView.provideInvalidJobView(response, jobId);
+		  InvalidJobView.provideInvalidJobView(response, jobId);
 		  return response;
 	  }
 
@@ -72,7 +75,7 @@ public class ApplyController
 	  catch (Exception e)
 	  {
 		  errList.add("We could not process your application.");
-		  ApplicationView.provideErrorView(response, errList, model);
+		  ErrorView.provideErrorView(response, errList, model);
 		  return response;
 	  }
 
@@ -83,11 +86,11 @@ public class ApplyController
 			  profile.getStatus().equals(ProfileStatus.NO_PROFILE) ||
 			  profile.getStatus().equals(ProfileStatus.REMOVED)))
 	  {
-		  ApplicationView.provideResumeCompletionView(response, model);
+		  ResumeCompletionView.provideResumeCompletionView(response, model);
 		  return response;
 	  }
 
-	  ApplicationView.provideApplySuccessView(response, model);
+	  ApplySuccessView.provideApplySuccessView(response, model);
 
 	  return response;
   }
