@@ -7,44 +7,44 @@ import java.util.Map;
 
 public class ResumeRepository
 {
-  private final Map<Integer, List<Resume>> resumes;
+	private final Map<Integer, List<Resume>> resumes;
 
-  public ResumeRepository()
-  {
-    this.resumes = new HashMap<>();
-  }
+	public ResumeRepository()
+	{
+		this.resumes = new HashMap<>();
+	}
 
-  public Resume saveResume(int jobseekerId, Resume resume)
-  {
-    addResumeForJobseeker(jobseekerId, resume);
+	public Resume saveResume(int jobseekerId, Resume resume)
+	{
+		addResumeForJobseeker(jobseekerId, resume);
 
-    return resume;
-  }
+		return resume;
+	}
 
-  public boolean contains(Resume aResume)
-  {
-    for(int key : resumes.keySet())
-    {
-      for(Resume resume : resumes.get(key))
-      {
-        if (aResume.equals(resume)) return true;
-      }
-    }
+	public boolean contains(Resume aResume)
+	{
+		for(int key : resumes.keySet())
+		{
+			for(Resume resume : resumes.get(key))
+			{
+				if (aResume.equals(resume)) return true;
+			}
+		}
 
-    return false;
-  }
+		return false;
+	}
 
-  private void addResumeForJobseeker(int jobseekerId, Resume resume)
-  {
-    List<Resume> jsResumes = resumes.get(jobseekerId);
+	private void addResumeForJobseeker(int jobseekerId, Resume resume)
+	{
+		List<Resume> jsResumes = resumes.get(jobseekerId);
 
-    if (jsResumes == null)
-    {
-      jsResumes = new ArrayList<>();
-    }
+		if (jsResumes == null)
+		{
+			jsResumes = new ArrayList<>();
+		}
 
-    jsResumes.add(resume);
+		jsResumes.add(resume);
 
-    resumes.put(jobseekerId, jsResumes);
-  }
+		resumes.put(jobseekerId, jsResumes);
+	}
 }
