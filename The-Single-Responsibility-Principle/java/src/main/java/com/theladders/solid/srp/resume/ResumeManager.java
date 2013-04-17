@@ -1,61 +1,68 @@
 package com.theladders.solid.srp.resume;
 
-import com.theladders.solid.srp.http.HttpRequest;
 import com.theladders.solid.srp.job.application.ApplicationFailureException;
 import com.theladders.solid.srp.job.application.ResumeNotFoundException;
 import com.theladders.solid.srp.jobseeker.Jobseeker;
 
 public class ResumeManager
 {
-  private final ResumeRepository resumeRepository;
+	private final ResumeRepository resumeRepository;
+	
+	private final ActiveResumeRepository activeResumeRepository;
 
-  public ResumeManager(ResumeRepository resumeRepository)
-  {
-    this.resumeRepository = resumeRepository;
-  }
+	public ResumeManager(ResumeRepository resumeRepository, ActiveResumeRepository activeResumeRepository)
+	{
+		this.resumeRepository = resumeRepository;
+		this.activeResumeRepository = activeResumeRepository;
+	}
 
-  public Resume saveResume(Jobseeker jobseeker,
-                           String fileName)
-  {
+	public Resume saveResume(Jobseeker jobseeker, String fileName) throws ResumeNotFoundException{
 
-    Resume resume = new Resume(fileName);
-    resumeRepository.saveResume(jobseeker.getId(), resume);
+		if(fileName == null){
+			throw new ResumeNotFoundException("No resume found");
+		}
+		Resume resume = new Resume(fileName);
+		resumeRepository.saveResume(jobseeker.getId(), resume);
+		
+		if(activeResumeRepository.activeResumeFor(jobseeker.getId()) == null){
+			activeResumeRepository.makeActive(jobseeker.getId(), resume);
+		}
+		
+		return resume;
+	}
 
-    return resume;
-  }
-  
-  public void makeActiveResume(Jobseeker jobseeker, Resume resume) throws ResumeNotFoundException{
-	  if(resume == null){
-		  throw new ResumeNotFoundException("No resume found");
-	  }
-	  jobseeker.activeResume(resume);
-  }
-  
-  public Resume saveNewOrRetrieveExistingResume(String newResumeFileName,
-		  Jobseeker jobseeker,
-		  HttpRequest request)
-  {	
+	public void makeActiveResume(Jobseeker jobseeker, Resume resume) throws ResumeNotFoundException{
+		if(resume == null){
+			throw new ResumeNotFoundException("No resume found");
+		}
+		activeResumeRepository.makeActive(jobseeker.getId(), resume);
+	}
 
-	  Resume resume;
-	  if (!"existing".equals(request.getParameter("whichResume")))
-	  {
-		  resume = saveResume(jobseeker, newResumeFileName);
+	public Resume saveNewOrRetrieveExistingResume(String newResumeFileName,
+			Jobseeker jobseeker,
+			String currentResume, String activeResume)
+	{	
 
-		  if (resume != null && "yes".equals(request.getParameter("makeResumeActive")))
-		  {
-			  try {
-				  makeActiveResume(jobseeker, resume);
-			  } catch (ApplicationFailureException e) {
-				  // TODO Auto-generated catch block
-				  e.printStackTrace();
-			  }
-		  }
-	  }
-	  else
-	  {
-		  resume = jobseeker.getActiveResume();
-	  }
+		Resume resume;
+		if (!"existing".equals(currentResume))
+		{
+			resume = saveResume(jobseeker, newResumeFileName);
 
-	  return resume;
-  }
+			if (resume != null && "yes".equals(activeResume))
+			{
+				try {
+					makeActiveResume(jobseeker, resume);
+				} catch (ApplicationFailureException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		else
+		{
+			resume = activeResumeRepository.activeResumeFor(jobseeker.getId());
+		}
+
+		return resume;
+	}
 }
