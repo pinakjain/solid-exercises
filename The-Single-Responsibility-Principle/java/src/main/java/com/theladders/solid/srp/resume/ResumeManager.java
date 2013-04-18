@@ -1,6 +1,5 @@
 package com.theladders.solid.srp.resume;
 
-import com.theladders.solid.srp.job.application.ApplicationFailureException;
 import com.theladders.solid.srp.job.application.ResumeNotFoundException;
 import com.theladders.solid.srp.jobseeker.Jobseeker;
 
@@ -16,7 +15,7 @@ public class ResumeManager
 		this.activeResumeRepository = activeResumeRepository;
 	}
 
-	public Resume saveResume(Jobseeker jobseeker, String fileName) throws ResumeNotFoundException{
+	public Resume saveResume(Jobseeker jobseeker, String fileName) {
 
 		if(fileName == null){
 			throw new ResumeNotFoundException("No resume found");
@@ -31,7 +30,7 @@ public class ResumeManager
 		return resume;
 	}
 
-	public void makeActiveResume(Jobseeker jobseeker, Resume resume) throws ResumeNotFoundException{
+	public void makeActiveResume(Jobseeker jobseeker, Resume resume) {
 		if(resume == null){
 			throw new ResumeNotFoundException("No resume found");
 		}
@@ -48,14 +47,9 @@ public class ResumeManager
 		{
 			resume = saveResume(jobseeker, newResumeFileName);
 
-			if (resume != null && "yes".equals(activeResume))
+			if ("yes".equals(activeResume))
 			{
-				try {
-					makeActiveResume(jobseeker, resume);
-				} catch (ApplicationFailureException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				makeActiveResume(jobseeker, resume);
 			}
 		}
 		else
