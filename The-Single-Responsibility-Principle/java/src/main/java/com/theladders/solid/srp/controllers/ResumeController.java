@@ -10,30 +10,27 @@ import com.theladders.solid.srp.applicationViews.ResumeCompletionView;
 import com.theladders.solid.srp.http.HttpRequest;
 import com.theladders.solid.srp.http.HttpResponse;
 import com.theladders.solid.srp.jobseeker.Jobseeker;
-import com.theladders.solid.srp.resume.Resume;
-import com.theladders.solid.srp.resume.ResumeManager;
+import com.theladders.solid.srp.processors.ResumeProcessor;
 
 public class ResumeController {
 
-	private final ResumeManager           resumeManager;
+	private final ResumeProcessor resumeProcessor;
 
-	public ResumeController(ResumeManager resumeManager)
+	public ResumeController(ResumeProcessor resumeProcessor)
 	{
-		this.resumeManager = resumeManager;
+		this.resumeProcessor = resumeProcessor;
 	}
 	
-	public HttpResponse saveResumeHandler(HttpRequest request,
-			HttpResponse response,
-			String origFileName)
+	public HttpResponse saveResumeHandler(HttpRequest request, HttpResponse response)
 	{
 		Jobseeker jobseeker = request.getSession().getJobseeker();
-		//	  JobseekerProfile profile = jobseekerProfileManager.getJobSeekerProfile(jobseeker);
+		String origFileName = request.getParameter("fileName");
+		
 		Map<String, Object> model = new HashMap<>();
 		List<String> errList = new ArrayList<>();
-
 		try
 		{
-			saveResume(jobseeker, origFileName);
+			resumeProcessor.save(jobseeker, origFileName);
 		}
 		catch (Exception e)
 		{
@@ -46,19 +43,20 @@ public class ResumeController {
 		return response;
 	}
 
-	public HttpResponse makeActiveResumeHandler(HttpRequest request, HttpResponse response, String origFileName) {
+	public HttpResponse makeActiveResumeHandler(HttpRequest request, HttpResponse response) {
 		Jobseeker jobseeker = request.getSession().getJobseeker();
-		//	  JobseekerProfile profile = jobseekerProfileManager.getJobSeekerProfile(jobseeker);
+		String origFileName = request.getParameter("fileName");
+		
 		Map<String, Object> model = new HashMap<>();
 		List<String> errList = new ArrayList<>();
-
+	
 		try
 		{
-			makeActiveResumeProcessor(jobseeker, origFileName);
+			resumeProcessor.makeActive(jobseeker, origFileName);
 		}
 		catch (Exception e)
 		{
-			errList.add("We could make the given resume active.");
+			errList.add("We not could make the given resume active.");
 			ErrorView.provideErrorView(response, errList, model);
 			return response;
 		}
@@ -67,15 +65,6 @@ public class ResumeController {
 		return response;
 	}
 
-	private Resume saveResume(Jobseeker jobseeker, String fileName)
-	{
-		return resumeManager.saveResume(jobseeker, fileName);
-	}
-
-	private void makeActiveResumeProcessor(Jobseeker jobseeker, String fileName)
-	{
-		Resume resume = new Resume(fileName);
-		resumeManager.makeActiveResume(jobseeker, resume);
-	}
+	
 
 }
