@@ -1,11 +1,11 @@
 package com.theladders.solid.srp.job;
 
 
-public class JobSearchService
+public class JobSearchManager
 {
   private final JobRepository repository;
 
-  public JobSearchService(JobRepository repository)
+  public JobSearchManager(JobRepository repository)
   {
     this.repository = repository;
   }
