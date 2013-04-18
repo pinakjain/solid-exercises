@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.theladders.solid.srp.controllers.ResumeController;
 import com.theladders.solid.srp.http.HttpRequest;
 import com.theladders.solid.srp.http.HttpResponse;
 import com.theladders.solid.srp.http.HttpSession;
@@ -27,7 +28,7 @@ public class TestResume {
 	  private static final int INCOMPLETE_JOBSEEKER  = 888;
 	  private static final int APPROVED_JOBSEEKER    = 1010;
 
-	  private ApplyController            controller;
+	  private ResumeController           resumeController;
 	  private JobRepository              jobRepository;
 	  private ResumeRepository           resumeRepository;
 	  private JobApplicationRepository   jobApplicationRepository;
@@ -45,12 +46,12 @@ public class TestResume {
 
 	    Map<String, String> parameters = new HashMap<>();
 	    parameters.put("jobId","5");
-
+	    parameters.put("fileName", SHARED_RESUME_NAME);
 	    HttpRequest request = new HttpRequest(session, parameters);
 
 	    HttpResponse response = new HttpResponse();
 
-	    controller.handle(request, response, SHARED_RESUME_NAME);
+	    resumeController.saveResumeHandler(request, response);
 
 	    assertTrue(resumeRepository.contains(new Resume(SHARED_RESUME_NAME)));
 	  }
@@ -64,12 +65,13 @@ public class TestResume {
 	    Map<String, String> parameters = new HashMap<>();
 	    parameters.put("jobId","5");
 	    parameters.put("makeResumeActive", "yes");
-
+	    parameters.put("fileName", SHARED_RESUME_NAME);
+	    
 	    HttpRequest request = new HttpRequest(session, parameters);
 
 	    HttpResponse response = new HttpResponse();
 
-	    controller.handle(request, response, "Save Me Seymour");
+	    resumeController.makeActiveResumeHandler(request, response);
 
 	    assertEquals(new Resume("Save Me Seymour"), activeResumeRepository.activeResumeFor(APPROVED_JOBSEEKER));
 	  }
