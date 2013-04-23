@@ -35,9 +35,30 @@ public class JobseekerConfidentialityProfile
 
     return isChanged;
   }
+  
+  public boolean resetConfidentialFlagsForCategories(List<String> confidentialPhraseCategoryNames)
+  {
+    boolean isChanged = false;
+    for(String categoryName : confidentialPhraseCategoryNames){
+    	List<ConfidentialPhrase> phrases = confidentialityProfile.get(categoryName);
+    	if (phrases != null)
+        {
+          for (ConfidentialPhrase phrase : phrases)
+          {
+            if (phrase.isConfidential())
+            {
+              phrase.setConfidential(false);
+              isChanged = true;
+            }
+          }
+        }
+    }
+    return isChanged;
+  }
 
   private List<ConfidentialPhrase> getConfidentialPhrases(ConfidentialPhraseCategory category)
   {
     return confidentialityProfile.get(category.name());
   }
+  
 }
