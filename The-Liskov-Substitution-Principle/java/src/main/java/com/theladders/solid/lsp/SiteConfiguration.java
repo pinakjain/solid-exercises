@@ -88,11 +88,11 @@ public class SiteConfiguration
 
   public void seedEnvironment(Environment environment)
   {
-    environment.put(GUEST_SITE_HOME, environment.get("home"));
-    environment.put(SECURE_GUEST_SITE_HOME, environment.get("secureHome"));
-    environment.put(FALCON_SITE_HOME, environment.get("home"));
-    environment.put(SECURE_FALCON_SITE_HOME, environment.get("secureHome"));
-    environment.put(MEMBER_SITE_HOME, environment.get("home") + MEMBER_PATH_PREFIX);
-    environment.put(SECURE_MEMBER_SITE_HOME, environment.get("secureHome") + MEMBER_PATH_PREFIX);
+    environment.putEnvData(GUEST_SITE_HOME, environment.getEnvDataForKey("home"));
+    environment.putEnvData(SECURE_GUEST_SITE_HOME, environment.getEnvDataForKey("secureHome"));
+    environment.putEnvData(FALCON_SITE_HOME, environment.getEnvDataForKey("home"));
+    environment.putEnvData(SECURE_FALCON_SITE_HOME, environment.getEnvDataForKey("secureHome"));
+    environment.putEnvData(MEMBER_SITE_HOME, environment.getEnvDataForKey("home") + MEMBER_PATH_PREFIX);
+    environment.putEnvData(SECURE_MEMBER_SITE_HOME, environment.getEnvDataForKey("secureHome") + MEMBER_PATH_PREFIX);
   }
 }
