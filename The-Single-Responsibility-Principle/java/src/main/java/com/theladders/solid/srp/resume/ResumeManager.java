@@ -39,15 +39,15 @@ public class ResumeManager
 
 	public Resume saveNewOrRetrieveExistingResume(String newResumeFileName,
 			Jobseeker jobseeker,
-			String currentResume, String activeResume)
+			boolean currentResume, boolean activeResume)
 	{	
 
 		Resume resume;
-		if (!"existing".equals(currentResume))
+		if (!currentResume)
 		{
 			resume = saveResume(jobseeker, newResumeFileName);
 
-			if ("yes".equals(activeResume))
+			if (activeResume)
 			{
 				makeActiveResume(jobseeker, resume);
 			}

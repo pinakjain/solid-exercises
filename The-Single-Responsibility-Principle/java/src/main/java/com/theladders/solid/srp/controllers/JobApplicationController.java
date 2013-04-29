@@ -11,6 +11,7 @@ import com.theladders.solid.srp.applicationViews.InvalidJobView;
 import com.theladders.solid.srp.applicationViews.ResumeCompletionView;
 import com.theladders.solid.srp.http.HttpRequest;
 import com.theladders.solid.srp.http.HttpResponse;
+import com.theladders.solid.srp.http.RequestInfo;
 import com.theladders.solid.srp.job.Job;
 import com.theladders.solid.srp.jobseeker.JobseekerProfile;
 import com.theladders.solid.srp.jobseeker.ProfileStatus;
@@ -18,6 +19,7 @@ import com.theladders.solid.srp.jobseeker.Jobseeker;
 import com.theladders.solid.srp.processors.JobApplicationProcessor;
 import com.theladders.solid.srp.processors.JobSearchProcessor;
 import com.theladders.solid.srp.processors.JobSeekerProfileProcessor;
+import com.theladders.solid.srp.processors.RequestProcessor;
 
 
 public class JobApplicationController
@@ -35,21 +37,13 @@ public class JobApplicationController
 
 	public HttpResponse jobApplicationHandler(HttpRequest request, HttpResponse response)
 	{
-		Jobseeker jobseeker = request.getSession().getJobseeker();
-		JobseekerProfile profile = jobSeekerProfileProcessor.getProfile(jobseeker);
-
-		String jobIdString = request.getParameter("jobId");
-		int jobId = Integer.parseInt(jobIdString);
-		Job job = jobSearchProcessor.searchJob(jobId);
+		RequestInfo info = RequestProcessor.processRequest(request);
+		JobseekerProfile profile = jobSeekerProfileProcessor.getProfile(info.getJobseeker());
+		Job job = jobSearchProcessor.searchJob(info.getJobId());
 		
-		String origFileName = request.getParameter("fileName");
-		String currentResume = request.getParameter("whichResume");
-		String activeResume = request.getParameter("makeResumeActive");
-		
-
 		if (job == null)
 		{
-			InvalidJobView.provideInvalidJobView(response, jobId);
+			InvalidJobView.provideInvalidJobView(response, info.getJobId());
 			return response;
 		}
 
@@ -58,7 +52,7 @@ public class JobApplicationController
 
 		try
 		{
-			jobApplicationProcessor.apply(currentResume, activeResume, jobseeker, job, origFileName);
+			jobApplicationProcessor.apply(info.isCurrentResume(), info.isMakeResumeActive(), info.getJobseeker(), job, info.getFilename());
 		}
 		catch (Exception e)
 		{
@@ -70,7 +64,7 @@ public class JobApplicationController
 		model.put("jobId", job.getJobId());
 		model.put("jobTitle", job.getTitle());
 
-		if (!jobseeker.isPremium() && (profile.getStatus().equals(ProfileStatus.INCOMPLETE) ||
+		if (!info.getJobseeker().isPremium() && (profile.getStatus().equals(ProfileStatus.INCOMPLETE) ||
 				profile.getStatus().equals(ProfileStatus.NO_PROFILE) ||
 				profile.getStatus().equals(ProfileStatus.REMOVED)))
 		{

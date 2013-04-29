@@ -20,7 +20,7 @@ public class JobApplicationProcessor {
 		this.resumeManager = resumeManager;
 	}
 	
-	public void apply(String currentResume, String activeResume, Jobseeker jobseeker, Job job, String fileName)
+	public void apply(boolean currentResume, boolean activeResume, Jobseeker jobseeker, Job job, String fileName)
 	{
 		Resume resume = resumeManager.saveNewOrRetrieveExistingResume(fileName,jobseeker, currentResume, activeResume);
 		UnprocessedApplication application = new UnprocessedApplication(jobseeker, job, resume);
