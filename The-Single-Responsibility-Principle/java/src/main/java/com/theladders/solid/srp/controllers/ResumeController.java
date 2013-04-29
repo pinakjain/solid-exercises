@@ -45,7 +45,7 @@ public class ResumeController {
 	}
 
 	public HttpResponse makeActiveResumeHandler(HttpRequest request, HttpResponse response) {
-		RequestInfo info = RequestInfo.processRequest(request);
+		RequestInfo info = RequestProcessor.processRequest(request);
 		
 		Map<String, Object> model = new HashMap<>();
 		List<String> errList = new ArrayList<>();
